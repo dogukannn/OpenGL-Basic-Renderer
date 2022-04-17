@@ -41,42 +41,24 @@
 #include "Material.h"
 
 
-typedef struct Vertex
-{
-    vec2 pos;
-    vec3 col;
-} Vertex;
-
-static const Vertex vertices[3] =
-{
-    { { -0.6f, -0.4f }, { 1.f, 0.f, 0.f } },
-    { {  0.6f, -0.4f }, { 0.f, 1.f, 0.f } },
-    { {   0.f,  0.6f }, { 0.f, 0.f, 1.f } }
-};
 
 RenderManager renderManager;
 
 
-static const char* vertex_shader_text =
-"#version 330\n"
-"uniform mat4 MVP;\n"
-"in vec3 vCol;\n"
-"in vec2 vPos;\n"
-"out vec3 color;\n"
-"void main()\n"
-"{\n"
-"    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
-"    color = vCol;\n"
-"}\n";
+void focusCameraToBoundingSphere(RenderManager renderManager, glm::vec3 center, float radius)
+{
+    glm::mat4 projectionMatrix = glm::frustum(center.x - radius * 1, center.x + radius * 1, center.y - radius * 1, center.y + radius * 1, radius, radius * 4);    
+    
+    glm::vec3 camEye(center.x, center.y, center.z + radius * 2.5f);
+    glm::vec3 camPos = camEye + glm::vec3(0, 0, -1);
+    glm::vec3 camUp(0, 1, 0);
 
-static const char* fragment_shader_text =
-"#version 330\n"
-"in vec3 color;\n"
-"out vec4 fragment;\n"
-"void main()\n"
-"{\n"
-"    fragment = vec4(color, 1.0);\n"
-"}\n";
+    glm::mat4 viewingMatrix = glm::lookAt(camEye, camPos, camUp);
+
+    renderManager.setProjectionMatrix(projectionMatrix);
+    renderManager.setViewingMatrix(viewingMatrix);
+}
+
 
 static void error_callback(int error, const char* description)
 {
@@ -156,38 +138,23 @@ int main(void)
     float ylen = sqrt((maxBound.y - minBound.y) * (maxBound.y - minBound.y));
     float zlen = sqrt((maxBound.z - minBound.z) * (maxBound.z - minBound.z));
 
+    float radius;
+    if (xlen > ylen && xlen > zlen) radius = xlen / 2;
+    else if (ylen > xlen && ylen > zlen) radius = ylen / 2;
+    else radius = zlen / 2;
+
     glm::mat4 matr = glm::translate(glm::mat4(1.0), glm::vec3(centerX, centerY, centerZ));
-    //glm::mat4 matr = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, 0));
     matr = glm::scale(matr, glm::vec3(1, 1, 1));
     matr = glm::rotate(matr, -90.0f, glm::vec3(1, 0, 0));
     matr = glm::translate(matr, glm::vec3(-centerX, -centerY, -centerZ));
     sceneManager.addObject(mesh, matr, mat);
 
-    glm::vec4 point = glm::vec4(centerX, centerY, centerZ, 1);
-    glm::vec4 minP = glm::vec4(minBound, 1);
-    glm::vec4 maxP = glm::vec4(maxBound, 1);
-    point = matr * point;
-    minP = matr * minP;
-    maxP = matr * maxP;
-    zlen = sqrt((maxP.z - minP.z) * (maxP.z - minP.z));
-    
-    std::cout <<" sd " << point.w << std::endl;
+   
+    glm::vec3 center(centerX, centerY, centerZ);
 
-    float fovyRad = (float)(45.0 / 180.0) * M_PI;
-    glm::mat4 projectionMatrix = glm::perspective(fovyRad, 1.0f, 1.0f, zlen + 50);
-    //projectionMatrix = glm::frustum(minBound.x, maxBound.x, minBound.y, maxBound.y, zlen, zlen*4);
-    projectionMatrix = glm::frustum(minP.x, maxP.x, minP.y, maxP.y, zlen, zlen * 3);
-
-    //glm::vec3 camEye(centerX, centerY, centerZ + zlen * 1.5f);
-    glm::vec3 camEye(point.x, point.y, point.z + zlen * 2.0f);
-    //glm::vec3 camEye(0, 0, 0 + zlen * 1.5f);
-    glm::vec3 camPos = camEye + glm::vec3(0, 0, -1);
-    glm::vec3 camUp(0, 1, 0);
-
-    glm::mat4 viewingMatrix = glm::lookAt(camEye, camPos, camUp);
-
-    renderManager.setProjectionMatrix(projectionMatrix);
-    renderManager.setViewingMatrix(viewingMatrix);
+    focusCameraToBoundingSphere(renderManager, center, radius);
+   
+   
 
     //eyePos = camEye;
 
