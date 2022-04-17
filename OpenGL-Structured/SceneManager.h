@@ -11,7 +11,7 @@ public:
 	//void addMesh(Mesh mesh);
 	//void addMeshWithTransformation(Mesh mesh, glm::mat4 matrix);
 	void addObject(Mesh mesh, glm::mat4 matrix, Material mat);
-	Object getObjectAt(int index);
+	Object* getObjectAt(int index);
 	/*glm::mat4 getViewingMatrix();
 	glm::mat4 getProjectionMatrix();
 	glm::vec3 getEyePos();*/

@@ -4,7 +4,7 @@
 #include <fstream>
 
 #include <glad/glad.h>
-
+#include <glm/glm.hpp>
 
 class Mesh
 {
@@ -25,6 +25,7 @@ public:
 
 private:
 	float* vertices;
+	float* normals;
 	int vertices_size, indices_size;
 	int* indices;
 	

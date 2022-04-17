@@ -7,13 +7,13 @@
 // here for simplicity.
 
 vec3 I = vec3(1, 1, 1);          // point light intensity
-vec3 Iamb = vec3(0.8, 0.8, 0.8); // ambient light intensity
-vec3 kd = vec3(1.0, 1.0, 1.0);     // diffuse reflectance coefficient
+vec3 Iamb = vec3(0.8, 0.2, 0.8); // ambient light intensity
+vec3 kd = vec3(1.0, 0.0, 1.0);     // diffuse reflectance coefficient
 vec3 ka = vec3(0.3, 0.3, 0.3);   // ambient reflectance coefficient
 vec3 ks = vec3(0.8, 0.8, 0.8);   // specular reflectance coefficient
-vec3 lightPos1 = vec3(0, 1, 1);   // light position in world coordinates
+vec3 lightPos1 = vec3(0, 0, -20);   // light position in world coordinates
 vec3 lightPos2 = vec3(3, 3, 3);   // light position in world coordinates
-vec3 lightPos3 = vec3(0, 5, 3);   // light position in world coordinates
+vec3 lightPos3 = vec3(1, 23, 5);   // light position in world coordinates
 
 uniform mat4 modelingMatrix;
 uniform mat4 viewingMatrix;
@@ -70,10 +70,10 @@ void main(void)
 
 	vec3 total = ambientColor;
 	total += CalcPointLight(lightPos1);
-	total += CalcPointLight(lightPos2);
-	total += CalcPointLight(lightPos3);
+	//total += CalcPointLight(lightPos2);
+	//total += CalcPointLight(lightPos3);
 
-	outTexCoord = vec2(inTexCoord.x,1-inTexCoord.y);
+	//outTexCoord = vec2(inTexCoord.x,1-inTexCoord.y);
 
 	// We update the front color of the vertex. This value will be sent
 	// to the fragment shader after it is interpolated at every fragment.

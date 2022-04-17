@@ -12,6 +12,6 @@ void main(void)
 	// value computed by the rasterizer.
 
 	//fragColor =  0.5 * color + texture(ourTexture, outTexCoord);
-	fragColor = vec4(1,1,1,1);
+	fragColor = color;
 	//fragColor = vec4(outTexCoord.x, outTexCoord.y,1,1);
 }

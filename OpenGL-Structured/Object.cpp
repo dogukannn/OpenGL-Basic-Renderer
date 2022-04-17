@@ -12,6 +12,11 @@ Object::Object(Mesh _mesh, glm::mat4 _modelMatrix, Material _mat)
 	mat = _mat;
 }
 
+void Object::setModelMatrix(glm::mat4 _modelMatrix)
+{
+	modelMatrix = _modelMatrix;
+}
+
 Material Object::getMat()
 {
 	return mat;

@@ -12,9 +12,9 @@ void SceneManager::addObject(Mesh mesh, glm::mat4 matrix, Material mat)
 	objects.push_back(Object(mesh, matrix, mat));
 }
 
-Object SceneManager::getObjectAt(int index)
+Object* SceneManager::getObjectAt(int index)
 {
-	return objects[index];
+	return &objects[index];
 }
 
 /*glm::mat4 SceneManager::getViewingMatrix()

@@ -10,7 +10,7 @@ void RenderManager::start()
     float fovyRad = (float)(45.0 / 180.0) * M_PI;
     projectionMatrix = glm::perspective(fovyRad, 1.0f, 1.0f, 100.0f);
 
-    glm::vec3 camEye(0, 0.0, 100.0);
+    glm::vec3 camEye(0, 0.0, 5.0);
     glm::vec3 camPos = camEye + glm::vec3(0, 0, -1);
     glm::vec3 camUp(0, 1, 0);
 
@@ -64,7 +64,7 @@ void RenderManager::render(SceneManager scene)
 
     for (int i = 0; i < object_size; i++)
     {
-        Object object = scene.getObjectAt(i);
+        Object object = *scene.getObjectAt(i);
         Material mat = object.getMat();
         
         glUseProgram(mat.glprogramIndex);
