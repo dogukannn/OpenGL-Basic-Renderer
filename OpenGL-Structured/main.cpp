@@ -151,8 +151,8 @@ void mainLoop(GLFWwindow* window, SceneManager scene)
             
             glm::mat4 model = glm::mat4(1);
             model = glm::translate(model, glm::vec3(0, 0, -5));
-            //model = glm::toMat4(qrot) * model;
-            model = glm::rotate(model, rotRad, perp);
+            model = model * glm::toMat4(qrot) ;
+            //model = glm::rotate(model, rotRad, perp);
             model = glm::translate(model, glm::vec3(0, 0, 5));
             model_matrix = model * model_matrix;
             //std::cout << glm::to_string(model_matrix) << std::endl;
