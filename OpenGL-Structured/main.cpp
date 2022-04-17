@@ -45,7 +45,7 @@
 RenderManager renderManager;
 
 
-void focusCameraToBoundingSphere(RenderManager renderManager, glm::vec3 center, float radius)
+void focusCameraToBoundingSphere(RenderManager& renderManager, glm::vec3 center, float radius)
 {
     glm::mat4 projectionMatrix = glm::frustum(center.x - radius * 1, center.x + radius * 1, center.y - radius * 1, center.y + radius * 1, radius, radius * 4);    
     
