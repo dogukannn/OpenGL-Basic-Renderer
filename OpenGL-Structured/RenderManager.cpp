@@ -67,6 +67,7 @@ void RenderManager::render(SceneManager scene)
         Object object = *scene.getObjectAt(i);
         Material mat = object.getMat();
         
+        
         glUseProgram(mat.glprogramIndex);
         glUniformMatrix4fv(mat.projectionMatrixLoc, 1, GL_FALSE, glm::value_ptr(projectionMatrix));
         glUniformMatrix4fv(mat.viewingMatrixLoc, 1, GL_FALSE, glm::value_ptr(viewingMatrix));
@@ -74,8 +75,9 @@ void RenderManager::render(SceneManager scene)
         glUniform3fv(mat.eyePosLoc, 1, glm::value_ptr(eyePos));
         glUniform2f(mat.iResloc, gWidth, gHeight);
         glUniform1f(mat.iTimeloc, timeValue);
+        glUniform1f(mat.lineThicknessLoc, 3.0f);
 
-        //std::cout << "in render loop" << std::endl;
+        
 
         object.getMesh()->draw();
     }

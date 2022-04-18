@@ -37,6 +37,7 @@
 #include "StructuredMesh.h"
 #include "RenderManager.h"
 #include "SceneManager.h"
+#include "Line.h"
 #include "Object.h"
 #include "Material.h"
 #include <glm/gtc/quaternion.hpp>
@@ -161,6 +162,12 @@ void mainLoop(GLFWwindow* window, SceneManager scene)
         isMoving = false;
         object->setModelMatrix(model_matrix);
 
+        Object* lineObj = scene.getObjectAt(1);
+        glm::mat4 model_matrix_line = lineObj->getModelMatrix();
+        model_matrix_line = glm::translate(model_matrix_line, glm::vec3(0, 0, -0.005));
+        lineObj->setModelMatrix(model_matrix_line);
+
+
         renderManager.render(scene);
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -239,11 +246,32 @@ int main(void)
     matr = glm::translate(matr, glm::vec3(-centerX, -centerY, -centerZ));
     sceneManager.addObject(&mesh, matr, mat);
 
+    glm::mat4 matx = glm::mat4(1);
+    //matx = glm::rotate(matx, -90.0f, glm::vec3(1, 0, 0));
+
+
+    glm::vec4 p0(-1.0f, -1.0f, 0.0f, 1.0f);
+    glm::vec4 p1(1.0f, -1.0f, 0.0f, 1.0f);
+    glm::vec4 p2(1.0f, 1.0f, 0.0f, 1.0f);
+    glm::vec4 p3(-1.0f, 1.0f, 0.0f, 1.0f);
     
-    
-    
-   
-   
+    std::vector<glm::vec4> varray1{ p3, p0, p1, p2, p3, p0, p1 };
+
+    Line* line = new Line();
+    line->addVertex(p3);
+    line->addVertex(p0);
+    line->addVertex(p1);
+    line->addVertex(p2);
+    line->addVertex(p3);
+    line->addVertex(p0);
+    line->addVertex(p1);
+
+    line->initVBO();
+    Material lineMat;
+    lineMat.initShaders("lineVert.glsl", "lineFrag.glsl");
+
+    sceneManager.addObject(line, matx, lineMat);
+
     glm::vec3 center(centerX, centerY, centerZ);
 
     //focusCameraToBoundingSphere(renderManager, center, radius);

@@ -117,8 +117,8 @@ void Material::initShaders(std::string vs_shader, std::string frag_shader)
     glprogramIndex = glCreateProgram();
     
     // Create the shaders for both programs
-    GLuint vs1 = createVS("vert.glsl");
-    GLuint fs1 = createFS("frag.glsl");
+    GLuint vs1 = createVS(vs_shader);
+    GLuint fs1 = createFS(frag_shader);
    
     // Attach the shaders to the programs
     glAttachShader(glprogramIndex, vs1);
@@ -144,7 +144,8 @@ void Material::initShaders(std::string vs_shader, std::string frag_shader)
     std::cout << eyePosLoc << std::endl;
     iResloc = glGetUniformLocation(glprogramIndex, "iResolution");
     iTimeloc = glGetUniformLocation(glprogramIndex, "iTime");
-    
+    lineThicknessLoc = glGetUniformLocation(glprogramIndex, "lineThickness");
+    std::cout << "line thickness loc " << lineThicknessLoc << std::endl;
 
     
 }

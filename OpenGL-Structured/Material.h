@@ -19,6 +19,7 @@ public:
 	GLint eyePosLoc;
 	GLint iResloc;
 	GLint iTimeloc;
+	GLint lineThicknessLoc;
 private:
 	
 };
