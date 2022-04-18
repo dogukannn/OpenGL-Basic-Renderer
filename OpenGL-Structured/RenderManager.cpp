@@ -77,7 +77,7 @@ void RenderManager::render(SceneManager scene)
 
         //std::cout << "in render loop" << std::endl;
 
-        object.getMesh().draw();
+        object.getMesh()->draw();
     }
 
 }

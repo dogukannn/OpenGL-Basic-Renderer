@@ -7,7 +7,7 @@ SceneManager::SceneManager()
 
 }
 
-void SceneManager::addObject(StructuredMesh mesh, glm::mat4 matrix, Material mat)
+void SceneManager::addObject(Drawable* mesh, glm::mat4 matrix, Material mat)
 {
 	objects.push_back(Object(mesh, matrix, mat));
 }

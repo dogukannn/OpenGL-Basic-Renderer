@@ -237,7 +237,7 @@ int main(void)
     matr = glm::rotate(matr, -90.0f, glm::vec3(1, 0, 0));
     matr = glm::scale(matr, glm::vec3(0.05f, 0.05f, 0.05f));
     matr = glm::translate(matr, glm::vec3(-centerX, -centerY, -centerZ));
-    sceneManager.addObject(mesh, matr, mat);
+    sceneManager.addObject(&mesh, matr, mat);
 
     
     

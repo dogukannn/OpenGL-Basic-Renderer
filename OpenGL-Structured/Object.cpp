@@ -5,7 +5,7 @@ Object::Object()
 {
 }
 
-Object::Object(StructuredMesh _mesh, glm::mat4 _modelMatrix, Material _mat)
+Object::Object(Drawable* _mesh, glm::mat4 _modelMatrix, Material _mat)
 {
 	mesh = _mesh;
 	modelMatrix = _modelMatrix;
@@ -27,7 +27,7 @@ glm::mat4 Object::getModelMatrix()
 	return modelMatrix;
 }
 
-StructuredMesh Object::getMesh()
+Drawable* Object::getMesh()
 {
 	return mesh;
 }

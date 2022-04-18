@@ -6,7 +6,7 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>
-
+#include "Drawable.h"
 
 struct Vertex
 {
@@ -43,7 +43,7 @@ struct Triangle
 };
 
 
-class StructuredMesh
+class StructuredMesh : public Drawable
 {
 public:
 	
@@ -60,6 +60,7 @@ public:
 	void addEdge(int v1, int v2);
 	void addVertex();
 	bool makeVertsNeighbor(int v1i, int v2i);
+
 
 	~StructuredMesh();
 	glm::vec3 minBound, maxBound;
