@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <vector>
 #include "SceneManager.h"
+#include "StructuredMesh.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #define _USE_MATH_DEFINES

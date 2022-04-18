@@ -11,11 +11,11 @@ class Mesh
 public:
 	Mesh();
 	Mesh(std::string obb_name);
-	void initVBO();
-	GLuint getglVertexAtrrib();
-	GLuint getglIndices();
-	GLuint getVAO();
-	void draw();
+	virtual void initVBO();
+	virtual GLuint getglVertexAtrrib();
+	virtual GLuint getglIndices();
+	virtual GLuint getVAO();
+	virtual void draw();
 	
 	~Mesh();
 

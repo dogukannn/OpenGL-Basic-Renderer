@@ -7,7 +7,7 @@
 // here for simplicity.
 
 vec3 I = vec3(1, 1, 1);          // point light intensity
-vec3 Iamb = vec3(0.8, 0.2, 0.8); // ambient light intensity
+vec3 Iamb = vec3(0.8, 0.8, 0.8); // ambient light intensity
 vec3 kd = vec3(1.0, 0.0, 1.0);     // diffuse reflectance coefficient
 vec3 ka = vec3(0.3, 0.3, 0.3);   // ambient reflectance coefficient
 vec3 ks = vec3(0.8, 0.8, 0.8);   // specular reflectance coefficient
@@ -22,14 +22,14 @@ uniform vec3 eyePos;
 
 layout(location=0) in vec3 inVertex;
 layout(location=1) in vec3 inNormal;
-layout(location=2) in vec2 inTexCoord;
+layout(location=2) in vec3 inColor;
 
 out vec2 outTexCoord;
 
 
 
-out vec4 color;
-
+flat out vec4 color;
+out vec4 sprit;
 
 
 vec3 CalcPointLight(vec3 lightPos)
@@ -57,6 +57,8 @@ vec3 CalcPointLight(vec3 lightPos)
 } 
 void main(void)
 {
+	kd = inColor;
+	Iamb *= inColor;
 	// First, convert to world coordinates. This is where
 	// lighting computations must be performed. inVertex
 	// is NOT in homogeneous coordinates. inNormal has three
@@ -72,7 +74,7 @@ void main(void)
 	total += CalcPointLight(lightPos1);
 	//total += CalcPointLight(lightPos2);
 	//total += CalcPointLight(lightPos3);
-
+	//vec3 total = inColor;
 	//outTexCoord = vec2(inTexCoord.x,1-inTexCoord.y);
 
 	// We update the front color of the vertex. This value will be sent
@@ -81,6 +83,7 @@ void main(void)
 	// primitive.
 
 	color = vec4(total, 1);
+	sprit = color;
 
 	// Transform the vertex with the product of the projection, viewing, and
 	// modeling matrices.

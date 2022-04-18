@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
-#include "Mesh.h"
+#include "StructuredMesh.h"
 #include "RenderManager.h"
 #include "SceneManager.h"
 #include "Object.h"
@@ -196,7 +196,7 @@ int main(void)
     glfwSwapInterval(1);
 
     
-    Mesh mesh("0.off");
+    StructuredMesh mesh = StructuredMesh("0.off");
     mesh.initVBO();
     Material mat;
     mat.initShaders("vert.glsl", "frag.glsl");
@@ -207,8 +207,8 @@ int main(void)
     renderManager.start();
 
 
-    glm::vec3 minBound(mesh.minx, mesh.miny, mesh.minz);
-    glm::vec3 maxBound(mesh.maxx, mesh.maxy, mesh.maxz);
+    glm::vec3 minBound = mesh.minBound;
+    glm::vec3 maxBound = mesh.maxBound;
 
 
     float centerZ = (maxBound.z + minBound.z) / 2;
