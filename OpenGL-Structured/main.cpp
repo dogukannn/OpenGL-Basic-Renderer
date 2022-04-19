@@ -51,6 +51,17 @@ bool isMoving = false;
 glm::vec3 currentDirVector(0, 0, 0);
 glm::vec3 recentPosVector(0, 0, 0);
 
+bool isDraggingFree = false;
+bool isMovingFree = false;
+glm::vec3 currentDirVectorFree(0, 0, 0);
+glm::vec3 recentPosVectorFree(0, 0, 0);
+
+glm::vec3 camEye(0, 0.0, 5.0);
+glm::vec3 camPos = camEye + glm::vec3(0, 0, -1);
+glm::vec3 camUp(0, 1, 0);
+glm::vec3 camRight = glm::cross(camPos - camEye, camUp);
+
+
 #define LOGVEC3(name, a) std::cout<<name << " : " << a.x << ", " << a.y << ", " << a.z <<std::endl
 
 
@@ -91,6 +102,24 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         std::cout << "mouse released" << "(x,y) : " << xpos << ", " << ypos << std::endl;
         isDragging = false;
     }
+
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+    {
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        recentPosVectorFree = glm::vec3(xpos, ypos, 0);
+        std::cout << "mouse clicked" << "(x,y) : " << xpos << ", " << ypos << std::endl;
+        isDraggingFree = true;
+    }
+
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
+    {
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+
+        std::cout << "mouse released" << "(x,y) : " << xpos << ", " << ypos << std::endl;
+        isDraggingFree = false;
+    }
 }
 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
@@ -112,6 +141,24 @@ static void cursor_position_callback(GLFWwindow* window, double xpos, double ypo
         //std::cout << "mouse clicked" << "(x,y) : " << xpos << ", " << ypos << std::endl;
 
     }
+    if (isDraggingFree)
+    {
+        isMovingFree = true;
+        glm::vec3 posVector(xpos, ypos, 0);
+
+        currentDirVectorFree = posVector - recentPosVectorFree;
+
+        if (glm::length(currentDirVectorFree) != 0)
+            currentDirVectorFree = glm::normalize(currentDirVectorFree);
+
+        //LOGVEC3("current_dir", currentDirVector);
+
+        recentPosVectorFree = posVector;
+        //std::cout << "mouse clicked" << "(x,y) : " << xpos << ", " << ypos << std::endl;
+
+    }
+
+
 }
 
 static void error_callback(int error, const char* description)
@@ -123,6 +170,47 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+    if (key == GLFW_KEY_W && (action == GLFW_REPEAT || action == GLFW_PRESS))
+    {
+        //std::cout << "fsfsfd";
+        glm::vec3 camDir = camPos - camEye;
+        camEye = camEye + camDir * 0.08f;
+        camPos = camEye + camDir;
+        glm::mat4 viewingMatrix = glm::lookAt(camEye, camPos, camUp);
+        renderManager.setViewingMatrix(viewingMatrix);
+    }
+    if (key == GLFW_KEY_S && (action == GLFW_REPEAT || action == GLFW_PRESS))
+    {
+        //std::cout << "fsfsfd";
+        glm::vec3 camDir = camPos - camEye;
+        camEye = camEye - camDir * 0.08f;
+        camPos = camEye + camDir;
+        glm::mat4 viewingMatrix = glm::lookAt(camEye, camPos, camUp);
+        renderManager.setViewingMatrix(viewingMatrix);
+    }
+    if (key == GLFW_KEY_D && (action == GLFW_REPEAT || action == GLFW_PRESS))
+    {
+        //std::cout << "fsfsfd";
+        glm::vec3 camDir = camPos - camEye;
+        camEye = camEye + camRight * 0.08f;
+        camPos = camEye + camDir;
+        camRight = glm::cross(camPos - camEye, camUp);
+
+        glm::mat4 viewingMatrix = glm::lookAt(camEye, camPos, camUp);
+        renderManager.setViewingMatrix(viewingMatrix);
+    }
+    if (key == GLFW_KEY_A && (action == GLFW_REPEAT || action == GLFW_PRESS))
+    {
+        //std::cout << "fsfsfd";
+        glm::vec3 camDir = camPos - camEye;
+        camEye = camEye - camRight * 0.08f;
+        camPos = camEye + camDir;
+        camRight = glm::cross(camPos - camEye, camUp);
+
+        glm::mat4 viewingMatrix = glm::lookAt(camEye, camPos, camUp);
+        renderManager.setViewingMatrix(viewingMatrix);
+    }
+
     
 }
 
@@ -139,7 +227,9 @@ void mainLoop(GLFWwindow* window, SceneManager scene)
     while (!glfwWindowShouldClose(window))
     {
         float rotRad = (float)(1.0f / 180.f) * M_PI;
-        glm::vec3 perp(currentDirVector.y, currentDirVector.x, 0);
+        //currentDirVector = glm::normalize(camUp * currentDirVector.y + camRight * currentDirVector.x);
+        //glm::vec3 perp(currentDirVector.y, currentDirVector.x, 0);
+        glm::vec3 perp = glm::normalize(camUp * currentDirVector.x + camRight * currentDirVector.y);
 
         glm::quat qrot(cos(rotRad / 2), perp.x * sin(rotRad / 2), perp.y * sin(rotRad / 2), perp.z * sin(rotRad / 2));
 
@@ -149,7 +239,9 @@ void mainLoop(GLFWwindow* window, SceneManager scene)
         if (isMoving && glm::length(perp) != 0)
         {
             //LOGVEC3("perp ", perp);
-            
+            //LOGVEC3("csdf", currentDirVector);
+            //LOGVEC3("up", camUp);
+
             glm::mat4 model = glm::mat4(1);
             model = glm::translate(model, glm::vec3(0, 0, -5));
             model = model * glm::toMat4(qrot) ;
@@ -157,9 +249,31 @@ void mainLoop(GLFWwindow* window, SceneManager scene)
             model = glm::translate(model, glm::vec3(0, 0, 5));
             model_matrix = model * model_matrix;
             //std::cout << glm::to_string(model_matrix) << std::endl;
+            isMoving = false;
+
+        }
+
+        if (isMovingFree)
+        {
+
+            glm::vec3 camDir = camPos - camEye;
+
+            camPos = camEye + glm::normalize(camDir + (- camUp * currentDirVectorFree.y + camRight * currentDirVectorFree.x) * 0.02f);
+            camRight = glm::cross(camPos - camEye, camUp);
+            camUp = glm::cross(camRight, camPos - camEye);
+
+            //LOGVEC3("pos", camPos);
+
+
+            glm::mat4 viewingMatrix = glm::lookAt(camEye, camPos, camUp);
+
+            renderManager.setViewingMatrix(viewingMatrix);
+
+            isMovingFree = false;
+
         }
             
-        isMoving = false;
+       
         object->setModelMatrix(model_matrix);
 
         Object* lineObj = scene.getObjectAt(1);
@@ -231,13 +345,7 @@ int main(void)
     else if (ylen > xlen && ylen > zlen) radius = ylen / 2;
     else radius = zlen / 2;
 
-    /*glm::mat4 matr = glm::translate(glm::mat4(1.0), glm::vec3(centerX, centerY, centerZ));
-    matr = glm::scale(matr, glm::vec3(1, 1, 1));
-    matr = glm::rotate(matr, -90.0f, glm::vec3(1, 0, 0));
-    matr = glm::translate(matr, glm::vec3(-centerX, -centerY, -centerZ));
-    sceneManager.addObject(mesh, matr, mat);*/
-
-    //glm::mat4 matr = glm::translate(glm::mat4(1.0), glm::vec3(centerX, centerY, centerZ));
+    
     
     glm::mat4 matr = glm::mat4(1);
     matr = glm::translate(matr, glm::vec3(0, 0, -5));
@@ -276,6 +384,8 @@ int main(void)
 
     //focusCameraToBoundingSphere(renderManager, center, radius);
    
+
+
    
 
     //eyePos = camEye;
